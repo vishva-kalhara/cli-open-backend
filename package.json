@@ -1,0 +1,17 @@
+{
+    "name": "open-backend",
+    "version": "1.0.3",
+    "author": "Wishva Kalhara Chandrasekara",
+    "license": "MIT",
+    "bin": "./bin/cli.js",
+    "description": "Create Node.js backend with Express and MongoDB with built-in Authentication and Authorization, Security and Error Handling.",
+    "main": "./bin/cli.js",
+    "type": "module",
+    "scripts": {
+        "start": "node ./bin/cli.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "dependencies": {
+        "@clack/prompts": "^0.7.0"
+    }
+}
