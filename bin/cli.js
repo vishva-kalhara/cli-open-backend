@@ -54,14 +54,10 @@ async function main() {
         {
             path: () =>
                 p.text({
-                    message: "Where should we create your project?",
+                    message: "What is your project name?",
                     placeholder: " api-sparkling-solid",
                     validate: (value) => {
                         if (!value) return "Please enter a project name.";
-                        // if (value[0] !== ".")
-                        //     return "Please enter a project name.";
-                        // if (value[0] !== "./")
-                        //     return "Please enter a project name.";
                     },
                 }),
             type: ({ results }) =>
@@ -77,25 +73,11 @@ async function main() {
                         },
                         {
                             value: "js_mongodb",
-                            label: "Express + MongoDB + Typescript",
+                            label: "Express + MongoDB + JavaScript",
                         },
-                    ],
-                }),
-            install: () =>
-                p.confirm({
-                    message: "Install dependencies?",
-                    initialValue: true,
-                }),
-            sel_pkg_manager: ({ results }) =>
-                p.select({
-                    message: `Pick a open-backend variation`,
-                    initialValue: "pnpm",
-                    maxItems: 5,
-                    options: [
-                        { value: "npm", label: "npm" },
                         {
-                            value: "pnpm",
-                            label: "pnpm (recommended)",
+                            value: "ts_mongodb_express",
+                            label: "Express + MongoDB + Typescript",
                         },
                     ],
                 }),
@@ -108,43 +90,29 @@ async function main() {
         }
     );
 
-    if (project.sel_pkg_manager) {
-        // console.log(project);
+    let gitCheckoutCommand;
 
-        let gitCheckoutCommand;
-        const installDepsCommand = `cd ${project.path} && ${project.sel_pkg_manager} install`;
-
-        const s = p.spinner();
-        s.start("Cloning the template");
-        await setTimeout(2500);
-        if (project.type == "ts_init") {
-            gitCheckoutCommand = `git clone --depth 1  https://github.com/vishva-kalhara/node-ts-.git ${project.path}`;
-        } else if (project.type == "ts_express") {
-            gitCheckoutCommand = `git clone --depth 1  https://github.com/vishva-kalhara/node-ts-starter.git ${project.path}`;
-        } else if (project.type == "js_mongodb") {
-            gitCheckoutCommand = `git clone --depth 1  https://github.com/vishva-kalhara/open-backend-express-mongodb ${project.path}`;
-        }
-
-        const checkedOut = runCommand(gitCheckoutCommand);
-        if (!checkedOut) process.exit(-1);
-
-        console.log("");
-
-        s.stop("Cloning completed!");
-
-        if (project.install) {
-            const s2 = p.spinner();
-            s2.start("Cloning the dependancies");
-            await setTimeout(2500);
-            const idDepsInstalled = runCommand(installDepsCommand);
-            if (!idDepsInstalled) process.exit(-1);
-            s2.stop(`Installed via ${project.sel_pkg_manager}`);
-        }
+    const s = p.spinner();
+    s.start("Cloning the template");
+    await setTimeout(2500);
+    if (project.type == "ts_init") {
+        gitCheckoutCommand = `git clone --depth 1  https://github.com/vishva-kalhara/node-ts-.git ${project.path}`;
+    } else if (project.type == "ts_express") {
+        gitCheckoutCommand = `git clone --depth 1  https://github.com/vishva-kalhara/node-ts-starter.git ${project.path}`;
+    } else if (project.type == "js_mongodb") {
+        gitCheckoutCommand = `git clone --depth 1  https://github.com/vishva-kalhara/open-backend-express-mongodb.git ${project.path}`;
+    } else if (project.type == "ts_mongodb_express") {
+        gitCheckoutCommand = `git clone --depth 1  https://github.com/vishva-kalhara/express-mongodb-ts.git ${project.path}`;
     }
 
-    let nextSteps = `cd ${project.path}        \n${
-        project.install ? "" : "pnpm install\n"
-    }npm start`;
+    const checkedOut = runCommand(gitCheckoutCommand);
+    if (!checkedOut) process.exit(-1);
+
+    console.log("");
+
+    s.stop("Cloning completed!");
+
+    let nextSteps = `cd ${project.path} \nnpm install \nnpm start`;
 
     p.note(nextSteps, "Next steps.");
 
